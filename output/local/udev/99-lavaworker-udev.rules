@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015",ATTRS{serial}=="DAZ0JVTE", MODE="0664", OWNER="uucp", SYMLINK+="dragonboard-410c-01"

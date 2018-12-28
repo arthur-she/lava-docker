@@ -16,7 +16,24 @@ slaves:
     host: local
     remote_master: master1
     remote_user: admin
+    dispatcher_ip: 192.168.29.254
+    extra_actions:
+      - "apt -y install net-tools lava-lxc-mocker lsb-release"
+      - "apt -y install simg2img img2simg"
 
 boards:
   - name: qemu-01
     type: qemu
+  - name: lxc-01
+    type: lxc
+  - name: dragonboard-410c-01
+    type: dragonboard-410c
+    pdu_generic:
+      hard_reset_command: /usr/local/bin/dragonboard-ftdi.sh DAZ0JVTE reset-fastboot
+      power_off_command: /usr/local/bin/dragonboard-ftdi.sh DAZ0JVTE off
+      power_on_command: /usr/local/bin/dragonboard-ftdi.sh DAZ0JVTE on
+    uart:
+      idvendor: 0x0403
+      idproduct: 0x6015
+      serial: DAZ0JVTE
+      

@@ -1,0 +1,2 @@
+apt -y install net-tools lava-lxc-mocker lsb-release
+apt -y install simg2img img2simg iputils-ping net-tools fastboot

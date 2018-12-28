@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  lab-slave-0:
+    build: {context: lab-slave-0}
+    devices: ['/dev/dragonboard-410c-01:/dev/dragonboard-410c-01']
+    dns_search: ''
+    environment: {LAVA_DISPATCHER_IP: 192.168.29.254, LAVA_MASTER: master1, LAVA_MASTER_URI: 'http://admin:longrandomtokenadmin@master1:80/RPC2'}
+    hostname: lab-slave-0
+    ports: ['69:69/udp', '80:80', '61950-62000:61950-62000']
+    volumes:
+      - /dev:/dev:rw
+      - /boot:/boot
+      - /lib/modules:/lib/modules
+      - /sys/class/gpio:/sys/class/gpio:rw
+    privileged: true
+  master1:
+    build: {context: master1}
+    hostname: master1
+    ports: ['10080:80', '5555:5555', '5556:5556', '5500:5500']
+    volumes:
+      - /boot:/boot
+      - /lib/modules:/lib/modules
+    privileged: true
