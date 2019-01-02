@@ -13,6 +13,7 @@ services:
       - /boot:/boot
       - /lib/modules:/lib/modules
       - /sys/class/gpio:/sys/class/gpio:rw
+      - /home/arthur/workspace/linaro/lhg/local-lava/lava-data/images:/images   # DUT test images
     privileged: true
   master1:
     build: {context: master1}

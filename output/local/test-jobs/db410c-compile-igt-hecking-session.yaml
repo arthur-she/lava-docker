@@ -1,0 +1,91 @@
+device_type: dragonboard-410c
+job_name: DB410c compile igt and hecking session
+timeouts:
+  job:
+    minutes: 60
+  action:
+    minutes: 15
+  connection:
+    minutes: 2
+priority: medium
+visibility: public
+
+protocols:
+  lava-lxc:
+    name: lxc-db410c-test
+    template: debian
+    distribution: debian
+    release: stretch
+
+actions:
+- deploy:
+    namespace: tlxc
+    timeout:
+      minutes: 5
+    to: lxc
+    packages:
+    - adb
+    - fastboot
+
+- boot:
+    namespace: tlxc
+    prompts:
+    - 'root@(.*):/#'
+    - 'root@linaro-developer:~#'
+    timeout:
+      minutes: 5
+    method: lxc
+
+- deploy:
+    timeout:
+      minutes: 15
+    to: fastboot
+    namespace: droid
+    images:
+      boot:
+        url: file:///images/db410c/debian/boot-linaro-buster-dragonboard-410c-359.img.gz
+        compression: gz
+      rootfs:
+        url: file:///images/db410c/debian/linaro-buster-alip-dragonboard-410c-359-no-sddm.img.gz
+        compression: gz
+        apply-overlay: true
+    protocols:
+      lava-lxc:
+      - action: fastboot-deploy
+        request: pre-power-command
+        timeout:
+          minutes: 2
+
+- boot:
+    namespace: droid
+    prompts:
+    - 'root@(.*):/#'
+    - 'root@linaro-alip:~#'
+    timeout:
+      minutes: 15
+    method: fastboot
+    protocols:
+      lava-lxc:
+      - action: auto-login-action
+        request: pre-os-command
+        timeout:
+          minutes: 2
+
+- test:
+    namespace: droid
+    timeout:
+      minutes: 50
+    definitions:
+    - repository: https://git.linaro.org/people/arthur.she/test-definition.qa.git
+      from: git 
+      path: automated/linux/igt/compile-igt.yaml
+      name: compile-igt
+    - repository: http://git.linaro.org/lava-team/hacking-session.git
+      from: git
+      path: hacking-session-debian.yaml
+      name: hacking
+      parameters:
+        IRC_USER: "arthur-she"
+        PUB_KEY:  "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUaVdK/M0wOf1bayC5ndFWVqgXIqrGD929plWN+/dIdvc9YGT2xtFmuNq5KfXo5uRF1kLiMOmoq+a63Esd7mzeJ20WMjxxyd85680VDuF7HPgwEkfDGSAKQ/jDTPwKnP4Kgvs9KBwgPKywCv1dUOxSdf31Whuu13rotmAkpuHBET5FqqewsTVZKyNRaMTbDTv9FfGpIR8ON6TflrfsyCKh5kczOQNR5l/eXUkyYQuxMMjGAa+CwBU2Wni+JQn72QQrv2P6YZjTmk6W5EJxicOPczGU02ppPvhT/Y6zpH/8S13EUi/1ma22r92vvDPR4co5aRbMR+7KIU+3QbL93hE/ arthur@arthur-X1C"
+
+
